@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOXXY PLAYER</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #1b0033, #000a40);
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 2.5em;
+      color: #bb00ff;
+      text-shadow: 0 0 10px #6c00ff;
+    }
+
+    input {
+      width: 80%;
+      max-width: 600px;
+      padding: 15px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: none;
+      margin: 20px 0;
+      background-color: #220050;
+      color: white;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 1em;
+      background-color: #6c00ff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background-color: #9a00ff;
+    }
+
+    iframe {
+      width: 90%;
+      max-width: 900px;
+      height: 500px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.9em;
+      color: #cccccc;
+    }
+
+    .footer a {
+      color: #66ccff;
+      text-decoration: none;
+    }
+
+    .ads {
+      margin-top: 40px;
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+    }
+
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #222;
+      padding: 15px;
+      text-align: center;
+      font-size: 0.9em;
+      z-index: 999;
+    }
+
+    .cookie-banner button {
+      background: #6c00ff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      margin-left: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .warning {
+      background-color: #ff0044;
+      padding: 12px;
+      border-radius: 8px;
+      color: white;
+      margin-top: 20px;
+    }
+  </style>
+
+  <!-- Google Ads -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2146974502172980" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <h1>NOXXY PLAYER</h1>
+
+  <input type="text" id="urlInput" placeholder="Cole a URL do vídeo aqui" onkeyup="handleEnter(event)">
+  <button onclick="loadVideo()">Carregar</button>
+
+  <div id="playerContainer"></div>
+  <div id="warningContainer"></div>
+
+  <div class="ads">
+    <!-- Espaço para Google Ads -->
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-2146974502172980"
+      data-ad-slot="1234567890"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+  <div class="footer">
+    <p>Este site usa embeds públicos e não hospeda vídeos. <br>
+    <a href="#" onclick="alert('Termos de uso simples. Não armazenamos dados. Vídeos de responsabilidade das plataformas originais.')">Termos de Uso</a> | 
+    <a href="#" onclick="alert('Este site não coleta dados pessoais.')">Privacidade</a></p>
+  </div>
+
+  <div class="cookie-banner" id="cookieBanner">
+    Este site usa cookies para melhorar sua experiência.
+    <button onclick="acceptCookies()">Aceitar</button>
+    <button onclick="declineCookies()">Recusar</button>
+  </div>
+
+  <script>
+    function convertToEmbed(url) {
+      try {
+        if (url.includes("youtube.com/watch?v=")) {
+          const id = new URL(url).searchParams.get("v");
+          return `https://www.youtube.com/embed/${id}`;
+        }
+        if (url.includes("youtu.be/")) {
+          const id = url.split("youtu.be/")[1].split("?")[0];
+          return `https://www.youtube.com/embed/${id}`;
+        }
+        if (url.includes("youtube.com/shorts/")) {
+          const id = url.split("shorts/")[1].split("?")[0];
+          return `https://www.youtube.com/embed/${id}`;
+        }
+      } catch (e) {
+        return null;
+      }
+      return null;
+    }
+
+    function loadVideo() {
+      const url = document.getElementById("urlInput").value.trim();
+      const embedUrl = convertToEmbed(url);
+      const player = document.getElementById("playerContainer");
+      const warning = document.getElementById("warningContainer");
+
+      player.innerHTML = '';
+      warning.innerHTML = '';
+
+      if (embedUrl) {
+        const iframe = document.createElement("iframe");
+        iframe.src = embedUrl;
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        iframe.allowFullscreen = true;
+        player.appendChild(iframe);
+      } else {
+        warning.innerHTML = '<div class="warning">URL inválida ou não suportada.</div>';
+      }
+    }
+
+    function handleEnter(event) {
+      if (event.key === "Enter") {
+        loadVideo();
+      }
+    }
+
+    function acceptCookies() {
+      document.getElementById("cookieBanner").style.display = "none";
+      localStorage.setItem("cookiesAccepted", "true");
+    }
+
+    function declineCookies() {
+      document.getElementById("cookieBanner").style.display = "none";
+      localStorage.setItem("cookiesAccepted", "false");
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem("cookiesAccepted")) {
+        document.getElementById("cookieBanner").style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
